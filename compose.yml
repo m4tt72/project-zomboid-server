@@ -1,0 +1,19 @@
+volumes:
+  data:
+
+services:
+  project-zomboid:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: project-zomboid
+    user: 1000:1000
+    volumes:
+      - data:/home/zombie/Zomboid
+    ports:
+      - 16261:16261/udp
+      - 16262:16262/udp
+    # comment this after tunning `docker compose exec project-zomboid bash start-server.sh` and setting a password.
+    # tty: true
+    # stdin_open: true
+    # command: tail -f /dev/null
