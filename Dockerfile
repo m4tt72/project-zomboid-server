@@ -1,11 +1,12 @@
-FROM cm2network/steamcmd AS downloader
-RUN bash ./steamcmd.sh +@sSteamCmdForcePlatformType linux +force_install_dir /home/steam/server +login anonymous +app_update 380870 +quit
+FROM steamcmd/steamcmd:latest AS downloader
+COPY lib/update_zomboid.txt /update_zomboid.txt
+RUN mkdir -p /opt/pzserver/
+RUN steamcmd +runscript /update_zomboid.txt
 
 FROM debian:trixie-slim
-RUN apt-get update && apt-get upgrade -y
-RUN apt-get install -y ca-certificates
-RUN useradd -m zombie
+RUN apt-get update && apt-get upgrade -y && apt-get install -y ca-certificates
+COPY --from=downloader /opt/pzserver/ /opt/pzserver/
+RUN useradd -m zombie && chown -R zombie:zombie /opt/pzserver/
 USER zombie
-COPY --from=downloader /home/steam/server /home/zombie/server
-WORKDIR /home/zombie/server
-CMD ["./start-server.sh"]
+WORKDIR /opt/pzserver
+ENTRYPOINT ["/bin/bash", "-c", "/opt/pzserver/start-server.sh"]

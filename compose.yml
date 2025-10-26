@@ -1,14 +1,18 @@
 volumes:
-  data:
+  downloads:
 
 services:
   project-zomboid:
-    image: ghcr.io/m4tt72/project-zomboid-server:main
+    # image: ghcr.io/m4tt72/project-zomboid-server:main
+    build:
+      context: .
+      dockerfile: Dockerfile
+    user: 1000:1000
     container_name: project-zomboid
     restart: unless-stopped
-    user: 1000:1000
     volumes:
-      - data:/home/zombie/Zomboid
+      - ./data:/home/zombie/Zomboid
+      # - downloads:/opt/pzserver/steamapps/workshop
     ports:
       - 16261:16261/udp
       - 16262:16262/udp
