@@ -1,7 +1,7 @@
 FROM cm2network/steamcmd AS downloader
 RUN bash ./steamcmd.sh +@sSteamCmdForcePlatformType linux +force_install_dir /home/steam/server +login anonymous +app_update 380870 +quit
 
-FROM debian:bookworm-slim
+FROM debian:trixie-slim
 RUN apt-get update && apt-get upgrade -y
 RUN apt-get install -y ca-certificates
 RUN useradd -m zombie
